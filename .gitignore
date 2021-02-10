@@ -1,0 +1,15 @@
+.DS_Store
+
+# Dependency directory
+/node_modules
+/dist
+/cypress/videos
+/coverage
+yarn-error.log
+
+# reg-suit
+.reg
+cypress/screenshots
+
+# add
+.env

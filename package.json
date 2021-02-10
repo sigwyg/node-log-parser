@@ -1,0 +1,15 @@
+{
+  "name": "log_parser",
+  "version": "1.0.0",
+  "description": "parsing logs",
+  "main": "parse.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "commander": "^7.0.0"
+  }
+}
