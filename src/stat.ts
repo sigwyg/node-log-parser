@@ -18,7 +18,9 @@
  * ]
  *
  */
-interface logData {
+import { UAParser } from 'ua-parser-js';
+
+interface LogData {
   ip: string;
   user: string;
   request: string;
@@ -30,9 +32,63 @@ interface logData {
   time: string;
 }
 
+interface Stats {
+  [property: string]: StatsValue
+}
+interface StatsValue {
+  [property: string]: number
+}
 
-export function getStats(data: Array<logData>) {
+export function getStats(data: Array<LogData>) {
+  const count:Stats = {
+    ua: {},
+    os: {},
+    ip: {},
+  }
+
+  // count
   for(const log of data) {
-    console.log(log.ua)
+    const uaGroup = detectUA(log.ua)
+    count.ua[uaGroup.ua] = ( count.ua[uaGroup.ua] || 0 ) +1
+    count.os[uaGroup.os] = ( count.os[uaGroup.os] || 0 ) +1
+    count.ip[log.ip] = ( count.ip[log.ip] || 0 ) +1
+  }
+
+  // sort
+  const sortedList = {
+    ua: sortObj(count.ua),
+    os: sortObj(count.os),
+    ip: sortObj(count.ip)
+  }
+  return sortedList
+}
+
+/**
+ * valueでソート済みの配列を返す
+ *
+ * @param {Object} UAと合計数
+ * @return {Array} UAと合計数
+ */
+function sortObj(obj:StatsValue){
+  return Object.entries(obj)
+  .sort(([,a], [,b]) => b - a )
+  .map(([key, value]) => ({ [key]: value }))
+}
+
+/**
+ * UAからブラウザ判別
+ *
+ * @param {string} ua user-agent
+ * @return {object} {ua: 'hoge', os: 'fuga'}
+ * @required https://github.com/faisalman/ua-parser-js
+ */
+function detectUA(ua: string) {
+  const uaParser = new UAParser(ua)
+  const uaGroup = uaParser.getBrowser().name || ua
+  const os = uaParser.getOS().name || ua
+
+  return {
+    ua: uaGroup,
+    os: os
   }
 }
