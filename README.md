@@ -37,18 +37,16 @@ NginxのLog形式をJavascriptのObjectに分解する
 
 ```
 {
+  total: 70418,
   ua: [
-    { Chrome: 69532 },
-    { 'ELB-HealthChecker/2.0': 410 },
+    { name: 'Chrome', count: 69532, percentage: 98.7 },
     ...
   os: [
-    { 'Mac OS': 41503 },
-    { 'Chromium OS': 14756 },
-    { Windows: 12473 },
-    { Linux: 802 },
+    { name: 'Mac OS', count: 41503, percentage: 58.9 },
     ...
   ],
   ip: [
+    { name: '172.xx.xx.xxx', count: 35636, percentage: 50.6 },
     ...
   ]
 }

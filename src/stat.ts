@@ -32,11 +32,23 @@ interface LogData {
   time: string;
 }
 
+// TODO: Stats*を整理する
 interface Stats {
   [property: string]: StatsValue
 }
 interface StatsValue {
   [property: string]: number
+}
+interface StatsList {
+  total: number
+  ua: Array<StatsObject>
+  os: Array<StatsObject>
+  ip: Array<StatsObject>
+}
+interface StatsObject {
+  name: string
+  count: number
+  percentage: number
 }
 
 export function getStats(data: Array<LogData>) {
@@ -56,11 +68,39 @@ export function getStats(data: Array<LogData>) {
 
   // sort
   const sortedList = {
+    total: data.length,
     ua: sortObj(count.ua),
     os: sortObj(count.os),
     ip: sortObj(count.ip)
   }
-  return sortedList
+
+  // addPercentage
+  const total = sortedList.total
+  const statsList: StatsList = {
+    total: total,
+    ua: addPercentage(total, sortedList.ua),
+    os: addPercentage(total, sortedList.os),
+    ip: addPercentage(total, sortedList.ip),
+  }
+  return statsList
+}
+
+/**
+ * カウント済みの要素に百分率を付与する
+ *
+ * @param {Object} { Chrome: 69532 }
+ * @return {Object} { name: ..., count: ..., percentage: ... }
+ */
+function addPercentage(total: number, list: Array<StatsValue> ): Array<StatsObject> {
+  return list.map((obj, idx) => {
+    const key =  Object.keys(obj)[0]
+    const val = Object.values(obj)[0]
+    return {
+      name: key,
+      count: val,
+      percentage: Math.round((val / total) * 1000) / 10 // 98.5
+    }
+  })
 }
 
 /**
